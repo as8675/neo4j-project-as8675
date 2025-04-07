@@ -1,0 +1,46 @@
+body { 
+  margin: 0; 
+  overflow: hidden; 
+}
+svg { 
+  width: 100vw; 
+  height: 100vh; 
+}
+circle { 
+  stroke: #fff; 
+  stroke-width: 1.5px;
+}
+line { 
+  stroke: #999; 
+  stroke-opacity: 0.6; 
+}
+text {
+  font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+  font-size: 1rem;
+}
+input {
+  position: fixed;
+  top: 0;
+  padding: .5em;
+}
+input#cypher-query {
+  left: 0;
+  width: calc( 100vw - 100px );
+}
+input#query-btn {
+  right: 0;
+  width: 100px;
+}
+
+/*
+  Update these styles to fit your data
+*/
+.Animal {
+  fill: red;
+}
+.Food {
+  fill: blue;
+}
+.Animal.Food {
+  fill: purple;
+}
