@@ -7,10 +7,19 @@ document.querySelector( `#query-btn` ).addEventListener( `click`, () => {
       const svg = d3.select(`svg`),
             width = window.innerWidth,
             height = window.innerHeight;
-      
-      // Clear SVG stage from previous query (if any)
-      svg.selectAll( `*` ).remove();
 
+      svg.selectAll( `*` ).remove(); // Clear SVG stage from previous query (if any)
+
+      const container = svg.append(`g`);
+
+      const zoom = d3.zoom()
+        .scaleExtent([0.1, 10])
+        .on("zoom", (event) => {
+          container.attr("transform", event.transform);
+        });
+
+      svg.call(zoom);
+      
       // Create d3.js simulation with several forces
       const simulation = d3.forceSimulation( data.nodes )
         .force( `link`, d3.forceLink( data.links ).id( d => d.id ).distance( 150 ) )
@@ -19,14 +28,14 @@ document.querySelector( `#query-btn` ).addEventListener( `click`, () => {
         .force( `collide`, d3.forceCollide( 60 ) );
 
       // Create relationships (edges)
-      const link = svg.append( `g` )
+      const link = container.append( `g` )
         .selectAll( `line` )
         .data( data.links )
         .join( `line` )
         .attr( `stroke-width`, 2 );
 
       // Create nodes (vertices)
-      const node = svg.append( `g` )
+      const node = container.append( `g` )
         .selectAll( `circle` )
         .data( data.nodes )
         .join( `circle` )
@@ -57,7 +66,7 @@ document.querySelector( `#query-btn` ).addEventListener( `click`, () => {
         .call( drag( simulation ) );
 
       // Add labels to nodes
-      const label = svg.append( `g` )
+      const label = container.append( `g` )
         .selectAll( `text` )
         .data( data.nodes )
         .join( `text` )
@@ -72,7 +81,7 @@ document.querySelector( `#query-btn` ).addEventListener( `click`, () => {
         .attr( `dy`, `.35em` );
 
       // Add relationship labels to edges
-      const relLabels = svg.append(`g`)
+      const relLabels = container.append(`g`)
       .selectAll(`text`)
       .data(data.links)
       .join(`text`)
