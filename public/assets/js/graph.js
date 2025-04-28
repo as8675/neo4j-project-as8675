@@ -1,3 +1,5 @@
+const tooltip = d3.select('#tooltip');
+
 document.querySelector( `#query-btn` ).addEventListener( `click`, () => {
   fetch( `/graph?cypher=${document.querySelector( `#cypher-query` ).value}` )
     .then( res => res.json() )
@@ -30,6 +32,28 @@ document.querySelector( `#query-btn` ).addEventListener( `click`, () => {
         .join( `circle` )
         .attr( `r`, 20 )
         .attr('class', d => d.label )
+        .attr('fill', d => {
+          if (d.label.includes('Patient')) return '#f39c12';        // orange
+          if (d.label.includes('Appointment')) return '#e74c3c';    // red
+          if (d.label.includes('Condition')) return '#2ecc71';      // green
+          if (d.label.includes('Neighbourhood')) return '#3498db';  // blue
+          return '#7f8c8d'; // default gray
+        })
+          .on('mouseover', (event, d) => {
+            let html = `<strong>${d.label}</strong><br/>`;
+            for (let [key, val] of Object.entries(d.properties)) {
+              html += `${key}: ${val}<br/>`;
+            }
+            tooltip.html(html).style('display', 'block');
+          })
+          .on('mousemove', (event) => {
+            tooltip
+              .style('left', (event.pageX + 10) + 'px')
+              .style('top', (event.pageY + 10) + 'px');
+          })
+          .on('mouseleave', () => {
+            tooltip.style('display', 'none');
+          })
         .call( drag( simulation ) );
 
       // Add labels to nodes
@@ -37,9 +61,24 @@ document.querySelector( `#query-btn` ).addEventListener( `click`, () => {
         .selectAll( `text` )
         .data( data.nodes )
         .join( `text` )
-        .text( d => d.properties.name || d.label )
+        .text(d => {
+          if (d.label.includes("Patient")) return `Patient: ${d.properties.patient_id}`;
+          if (d.label.includes("Appointment")) return `Appt: ${d.properties.appointment_id}`;
+          if (d.label.includes("Condition")) return `Condition: ${d.properties.condition_name}`;
+          if (d.label.includes("Neighbourhood")) return `${d.properties.name}`;
+          return d.label;
+        })
         .attr( `dx`, 25 )
         .attr( `dy`, `.35em` );
+
+      // Add relationship labels to edges
+      const relLabels = svg.append(`g`)
+      .selectAll(`text`)
+      .data(data.links)
+      .join(`text`)
+      .text(d => d.type)
+      .attr('font-size', '10px')
+      .attr('fill', '#333');
 
       // Position relationship and node elements
       simulation.on( `tick`, () => {
@@ -56,9 +95,12 @@ document.querySelector( `#query-btn` ).addEventListener( `click`, () => {
         label
           .attr( `x`, d => d.x )
           .attr( `y`, d => d.y );
+
+        relLabels
+          .attr( `x`, d => (d.source.x + d.target.x) / 2 )
+          .attr( `y`, d => (d.source.y + d.target.y) / 2 );
       });
 
-      // Handle node click-n-drag
       function drag( simulation ) {
         return d3.drag()
           .on( `start`, event => {

@@ -5,13 +5,34 @@
   <title>iSchool Neo4j Project with D3</title>
   <script src="https://d3js.org/d3.v7.min.js" defer></script>
   <script src="assets/js/graph.js" defer></script>
+  
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
 <body>
   <svg></svg>
   <input name="cypher-query" placeholder="Cypher Query" id="cypher-query"
-    value="MATCH (a {name: 'Eagle'})-[r:EATS]->(b)-[r2:EATS]->(c) RETURN a,r,b,r2,c">
+  value="
+  MATCH (p:Patient)-[r1:HAS_APPOINTMENT]->(a:Appointment)-[r2:TREATS]->(c:Condition),
+  (p)-[r3:LIVES_IN]->(n:Neighbourhood)
+  RETURN p, r1, a, r2, c, r3, n
+  LIMIT 50
+"
+  >
   <input type="button" value="Run Query" id="query-btn">
+
+  <div id="tooltip" style="
+  position: absolute;
+  background-color: white;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  pointer-events: none;
+  font-size: 12px;
+  box-shadow: 0px 0px 5px rgba(0,0,0,0.1);
+  display: none;
+"></div>
+
+
 </body>
 </html>
 
