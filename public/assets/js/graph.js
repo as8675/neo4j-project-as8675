@@ -1,16 +1,22 @@
 const tooltip = d3.select('#tooltip');
 
+const svg = d3.select(`svg`)
+      .attr( `width`, window.innerWidth )
+      .attr( `height`, window.innerHeight );
+
+const width = window.innerWidth,
+      height = window.innerHeight;
+
 document.querySelector( `#query-btn` ).addEventListener( `click`, () => {
   fetch( `/graph?cypher=${document.querySelector( `#cypher-query` ).value}` )
     .then( res => res.json() )
     .then( data => {
-      const svg = d3.select(`svg`),
-            width = window.innerWidth,
-            height = window.innerHeight;
 
-      svg.selectAll( `*` ).remove(); // Clear SVG stage from previous query (if any)
+      svg.selectAll( `.container` ).remove(); // Clear SVG stage from previous query (if any)
+      svg.selectAll( `.legend` ).remove(); // Clear SVG stage from previous query (if any)
 
-      const container = svg.append(`g`);
+      const container = svg.append(`g`)
+        .attr(`class`, `container`);
 
       const zoom = d3.zoom()
         .scaleExtent([0.1, 10])
@@ -50,7 +56,9 @@ document.querySelector( `#query-btn` ).addEventListener( `click`, () => {
         })
           .on('mouseover', (event, d) => {
             let html = `<strong>${d.label}</strong><br/>`;
-            for (let [key, val] of Object.entries(d.properties)) {
+            for (let [key, val] of Object.entries(d.properties)) if (typeof val === 'object' && val.low !== undefined) {
+              html += `${key}: ${val.low}<br/>`;
+            } else {
               html += `${key}: ${val}<br/>`;
             }
             tooltip.html(html).style('display', 'block');
@@ -127,5 +135,26 @@ document.querySelector( `#query-btn` ).addEventListener( `click`, () => {
             event.subject.fy = null;
           });
       }
+
+      const legend = d3.select("body")
+        .append("div")
+        .attr("class", "legend");
+
+        const items = [
+          { label: "Patient", color: "#f39c12" },
+          { label: "Appointment", color: "#e74c3c" },
+          { label: "Condition", color: "#2ecc71" },
+          { label: "Neighbourhood", color: "#3498db" }
+        ];
+
+        items.forEach(item => {
+          const legendItem = legend.append("div");
+          
+          legendItem.append("span")
+            .style("background-color", item.color);
+        
+          legendItem.append("span")
+            .text(item.label);
+        });
     });
 });

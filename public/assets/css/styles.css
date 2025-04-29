@@ -32,15 +32,69 @@ input#query-btn {
   width: 100px;
 }
 
-/*
-  Update these styles to fit your data
-*/
-.Animal {
-  fill: red;
+/* Tooltip styling */
+#tooltip {
+  position: absolute;
+  background-color: #ffffff;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  pointer-events: none;
+  font-size: 13px;
+  color: #333;
+  box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.15);
+  display: none;
+  max-width: 250px;
 }
-.Food {
-  fill: blue;
+
+/* Fixed floating legend */
+.legend {
+  position: absolute;
+  top: 35px;
+  left: 5px;
+  background-color: #ffffff;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: Arial, sans-serif;
+  width: 180px;
 }
-.Animal.Food {
-  fill: purple;
+
+.legend div {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.legend span {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+/* Node text labels */
+.container text {
+  font-size: 14px;
+  font-family: Arial, sans-serif;
+  pointer-events: none;
+  fill: #333;
+}
+
+/* Relationship labels (edge labels) */
+.container g text {
+  font-size: 14px;
+  fill: #666;
+}
+
+/* Graph container group */
+.container {
+  cursor: grab;
+}
+
+/* When dragging */
+.container:active {
+  cursor: grabbing;
 }
