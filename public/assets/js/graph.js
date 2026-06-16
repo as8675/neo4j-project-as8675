@@ -124,10 +124,12 @@ function runQuery( cypher ) {
             if ( !event.active ) simulation.alphaTarget( 0.3 ).restart();
             event.subject.fx = event.subject.x;
             event.subject.fy = event.subject.y;
+            event.subject._dragged = false;
           })
           .on( `drag`, event => {
             event.subject.fx = event.x;
             event.subject.fy = event.y;
+            event.subject._dragged = true;
           })
           .on( `end`, event => {
             if (!event.active) simulation.alphaTarget( 0 );
@@ -135,6 +137,43 @@ function runQuery( cypher ) {
             event.subject.fy = null;
           });
       }
+
+      let selectedNode = null;
+
+      function reset() {
+        selectedNode = null;
+        node.style('opacity', 1);
+        link.style('opacity', 1).style('stroke', '#999');
+        label.style('opacity', 1);
+        relLabels.style('opacity', 1);
+      }
+
+      function highlight( d ) {
+        if ( selectedNode === d ) { reset(); return; }
+        selectedNode = d;
+
+        const neighborIds = new Set([ d.id ]);
+        const connectedLinks = new Set();
+
+        data.links.forEach( l => {
+          if ( l.source.id === d.id ) { neighborIds.add( l.target.id ); connectedLinks.add( l ); }
+          else if ( l.target.id === d.id ) { neighborIds.add( l.source.id ); connectedLinks.add( l ); }
+        });
+
+        node.style( 'opacity', n => neighborIds.has( n.id ) ? 1 : 0.08 );
+        label.style( 'opacity', n => neighborIds.has( n.id ) ? 1 : 0.08 );
+        link.style( 'opacity', l => connectedLinks.has( l ) ? 1 : 0.04 )
+            .style( 'stroke', l => connectedLinks.has( l ) ? '#555' : '#999' );
+        relLabels.style( 'opacity', l => connectedLinks.has( l ) ? 1 : 0.04 );
+      }
+
+      node.on( 'click', ( event, d ) => {
+        if ( d._dragged ) return;
+        event.stopPropagation();
+        highlight( d );
+      });
+
+      svg.on( 'click', reset );
 
       const legend = d3.select("body")
         .append("div")
