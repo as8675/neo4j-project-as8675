@@ -7,8 +7,8 @@ const svg = d3.select(`svg`)
 const width = window.innerWidth,
       height = window.innerHeight;
 
-document.querySelector( `#query-btn` ).addEventListener( `click`, () => {
-  fetch( `/graph?cypher=${document.querySelector( `#cypher-query` ).value}` )
+function runQuery( cypher ) {
+  fetch( `/graph?cypher=${encodeURIComponent( cypher )}` )
     .then( res => res.json() )
     .then( data => {
 
@@ -157,4 +157,16 @@ document.querySelector( `#query-btn` ).addEventListener( `click`, () => {
             .text(item.label);
         });
     });
+}
+
+document.querySelector( `#query-btn` ).addEventListener( `click`, () => {
+  runQuery( document.querySelector( `#cypher-query` ).value );
+});
+
+document.querySelectorAll( `.preset-btn` ).forEach( btn => {
+  btn.addEventListener( `click`, () => {
+    const query = btn.dataset.query;
+    document.querySelector( `#cypher-query` ).value = query;
+    runQuery( query );
+  });
 });

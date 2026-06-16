@@ -5,24 +5,24 @@
   <title>iSchool Neo4j Project with D3</title>
   <script src="https://d3js.org/d3.v7.min.js" defer></script>
   <script src="assets/js/graph.js" defer></script>
-  
   <link rel="stylesheet" href="assets/css/styles.css">
 </head>
+<body>
   <svg></svg>
-  <div id="input-container"></div>
-  <input name="cypher-query" placeholder="Cypher Query" id="cypher-query"
-  value="
-  MATCH (p:Patient)-[r1:HAS_APPOINTMENT]->(a:Appointment)-[r2:TREATS]->(c:Condition),
-  (p)-[r3:LIVES_IN]->(n:Neighbourhood)
-  RETURN p, r1, a, r2, c, r3, n
-  LIMIT 50
-"
-  >
-  <input type="button" value="Run Query" id="query-btn">
+
+  <div id="query-bar">
+    <input name="cypher-query" placeholder="Cypher Query" id="cypher-query"
+      value="MATCH (p:Patient)-[r1:HAS_APPOINTMENT]->(a:Appointment)-[r2:TREATS]->(c:Condition),(p)-[r3:LIVES_IN]->(n:Neighbourhood) RETURN p, r1, a, r2, c, r3, n LIMIT 50">
+    <input type="button" value="Run Query" id="query-btn">
   </div>
+
+  <div id="preset-btns">
+    <button class="preset-btn" data-query="MATCH (p:Patient)-[r1:HAS_APPOINTMENT]->(a:Appointment)-[r2:TREATS]->(c:Condition) WHERE a.showed_up = false RETURN p, a, c, r1, r2 LIMIT 300">No-Shows by Condition</button>
+    <button class="preset-btn" data-query="MATCH (p:Patient)-[:DIAGNOSED_WITH]->(c:Condition) WITH p, count(c) AS cc WHERE cc > 1 MATCH (p)-[r1:HAS_APPOINTMENT]->(a:Appointment) WHERE a.showed_up = false MATCH (p)-[r2:DIAGNOSED_WITH]->(c) MATCH (p)-[r3:LIVES_IN]->(n:Neighbourhood) RETURN p, r1, a, r2, c, r3, n LIMIT 300">Multiple Conditions</button>
+    <button class="preset-btn" data-query="MATCH (p:Patient)-[r1:DIAGNOSED_WITH]->(c:Condition),(p)-[r2:LIVES_IN]->(n:Neighbourhood) WHERE n.name = 'JARDIM DA PENHA' RETURN p, c, n, r1, r2 LIMIT 300">By Neighborhood</button>
+    <button class="preset-btn" data-query="MATCH (p:Patient)-[r:HAS_APPOINTMENT]->(a:Appointment) WHERE p.age >= 60 RETURN p, a, r LIMIT 50">Seniors (60+)</button>
+  </div>
+
   <div id="tooltip"></div>
-
-
 </body>
 </html>
-

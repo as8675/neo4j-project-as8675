@@ -23,18 +23,50 @@ text {
   font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   font-size: 1rem;
 }
-input {
+#query-bar {
   position: fixed;
   top: 0;
-  padding: .5em;
+  left: 0;
+  width: 100%;
+  display: flex;
 }
 input#cypher-query {
-  left: 0;
-  width: calc( 100vw - 100px );
+  flex: 1;
+  padding: .5em;
 }
 input#query-btn {
-  right: 0;
   width: 100px;
+  padding: .5em;
+}
+
+#preset-btns {
+  position: fixed;
+  top: 42px;
+  left: 0;
+  display: flex;
+  gap: 6px;
+  padding: 6px 8px;
+  background: rgba(255,255,255,0.92);
+  border-bottom: 1px solid #e0e0e0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.preset-btn {
+  background-color: #fff;
+  color: #3498db;
+  border: 1.5px solid #3498db;
+  border-radius: 20px;
+  padding: 4px 14px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  white-space: nowrap;
+}
+
+.preset-btn:hover {
+  background-color: #3498db;
+  color: #fff;
 }
 .input-container {
   display: flex;
