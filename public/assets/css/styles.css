@@ -50,6 +50,7 @@ input#query-btn {
   border-bottom: 1px solid #e0e0e0;
   width: 100%;
   box-sizing: border-box;
+  overflow-x: auto;
 }
 
 .preset-btn {
@@ -115,8 +116,8 @@ input#query-btn {
 
 /* Fixed floating legend */
 .legend {
-  position: absolute;
-  top: 45px;
+  position: fixed;
+  top: 90px;
   left: 5px;
   background-color: #ffffff;
   padding: 12px;
