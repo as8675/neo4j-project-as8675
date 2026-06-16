@@ -1,17 +1,17 @@
 /* eslint-disable no-undef */
+require( `dotenv` ).config();
 const express = require( `express` );
 const neo4j = require( `neo4j-driver` );
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // Connect to Neo4j
 const driver = neo4j.driver(
-  `bolt://localhost:7687`,
-  neo4j.auth.basic( `neo4j`, `student1` )
+  process.env.NEO4J_URI,
+  neo4j.auth.basic( process.env.NEO4J_USER, process.env.NEO4J_PASSWORD )
 );
-// Update with your Neo4j database name:
-const session = driver.session( { database: `healthcare` } ); 
+const session = driver.session( { database: process.env.NEO4J_DATABASE } );
 
 app.use( express.static( `public` ) );
 
